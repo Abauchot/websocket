@@ -56,38 +56,3 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
-
-
-io.on('connection', (socket) => {
-    console.log('Nouvelle connexion client');
-  
-    socket.on('joinRoom', () => {
-      for (let id in users) {
-        if (id !== socket.id) {
-          socket.emit('offer', id, users[id].peerConnection.localDescription);
-        }
-      }
-    });
-  
-    socket.on('offer', (id, description) => {
-      io.to(id).emit('offer', socket.id, description);
-    });
-  
-    socket.on('answer', (id, description) => {
-      io.to(id).emit('answer', socket.id, description);
-    });
-  
-    socket.on('candidate', (id, candidate) => {
-      io.to(id).emit('candidate', socket.id, candidate);
-    });
-  
-    socket.on('disconnect', () => {
-      users = users.filter(u => u.id !== socket.id);
-      io.emit('updatePositions', users);
-      socket.broadcast.emit('disconnectPeer', socket.id);
-      console.log('Client déconnecté');
-    });
-  });
-  
-
-
