@@ -2,6 +2,8 @@
 
 This project is a real-time map and video conferencing application using WebRTC, Socket.io, and Leaflet.js. The application allows users to share their location on a map and engage in video conferencing.
 
+### Known issue: 
+- Unable to retrieve the video conference from the second user.
 ## Features
 
 - Real-time location sharing using geolocation and Leaflet.js
