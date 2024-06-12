@@ -51,6 +51,19 @@ io.on('connection', (socket) => {
     io.emit('updatePositions', users);
     console.log('Client déconnecté');
   });
+
+  // Handle WebRTC signaling messages
+  socket.on('offer', (data) => {
+    socket.broadcast.emit('offer', data);
+  });
+
+  socket.on('answer', (data) => {
+    socket.broadcast.emit('answer', data);
+  });
+
+  socket.on('candidate', (data) => {
+    socket.broadcast.emit('candidate', data);
+  });
 });
 
 server.listen(port, () => {

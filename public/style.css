@@ -8,3 +8,15 @@ body {
   width: 100%;
   margin: 20px 0;
 }
+
+#video-container {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 20px;
+}
+
+video {
+  width: 45%;
+  height: auto;
+  border: 1px solid #ccc;
+}
