@@ -31,3 +31,7 @@ This project is a real-time map and video conferencing application using WebRTC,
    ```bash
    git clone https://github.com/Abauchot/websocket.git
    cd websocket
+   
+### Start project
+```bash
+node server/app.js
