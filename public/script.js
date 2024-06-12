@@ -54,6 +54,11 @@ socket.on('updatePositions', (users) => {
   });
 });
 
+/**
+ * Initializes the map and updates the user's position when the window loads.
+ *
+ * @return {void} This function does not return a value.
+ */
 window.onload = () => {
   initMap();
   updatePosition();
