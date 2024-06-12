@@ -9,11 +9,20 @@ const io = socketIo(server);
 
 const port = 3000;
 
+// Middleware to parse JSON and serve static files
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '../public')));
 
 let users = [];
 
+/**
+ * Handles incoming POST requests to update a user's position.
+ * Adds the user if they don't exist, otherwise updates their position.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @return {void} This function does not return anything.
+ */
 app.post('/api/position', (req, res) => {
   const { id, position } = req.body;
   const user = users.find(u => u.id === id);
@@ -22,20 +31,34 @@ app.post('/api/position', (req, res) => {
   } else {
     users.push({ id, position });
   }
-  io.emit('updatePositions', users); // Envoyer les positions mises à jour à tous les clients
+  io.emit('updatePositions', users); // Send updated positions to all clients
   res.sendStatus(200);
 });
 
+/**
+ * Handles incoming GET requests to retrieve all user positions.
+ *
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @return {void} This function does not return anything.
+ */
 app.get('/api/positions', (req, res) => {
   res.json(users);
 });
 
+// Handle new client connections
 io.on('connection', (socket) => {
-  console.log('Nouvelle connexion client');
+  console.log('New client connection');
 
-  // Envoyer les positions actuelles au nouveau client
+  // Send current positions to the new client
   socket.emit('updatePositions', users);
 
+  /**
+   * Updates the user's position when 'updatePosition' event is received.
+   *
+   * @param {Object} pos - The position object.
+   * @return {void} This function does not return anything.
+   */
   socket.on('updatePosition', (pos) => {
     const user = users.find(u => u.id === socket.id);
     if (user) {
@@ -46,10 +69,11 @@ io.on('connection', (socket) => {
     io.emit('updatePositions', users);
   });
 
+  // Handle client disconnection
   socket.on('disconnect', () => {
     users = users.filter(u => u.id !== socket.id);
     io.emit('updatePositions', users);
-    console.log('Client déconnecté');
+    console.log('Client disconnected');
   });
 
   // Handle WebRTC signaling messages
@@ -66,6 +90,7 @@ io.on('connection', (socket) => {
   });
 });
 
+// Start the server and listen on the specified port
 server.listen(port, () => {
-  console.log(`Serveur en écoute sur http://localhost:${port}`);
+  console.log(`Server listening on http://localhost:${port}`);
 });
